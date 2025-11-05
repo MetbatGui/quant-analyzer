@@ -1,0 +1,19 @@
+# 전략 1: 2023년 1분기 -> 2분기 영업이익이 (0보다) 상승한 모든 주식
+strategy_name = "영업이익 23년 1Q->2Q 상승"
+
+[criteria]
+# 이 전략을 해석할 로직을 'QoQ_Growth'로 명명
+type = "QoQ_Growth"
+
+# 계산할 지표
+metric = "영업이익"
+
+# 기준 분기
+base_quarter = "2023/1Q"
+
+# 비교 분기
+target_quarter = "2023/2Q"
+
+# 최소 성장률 (0% 초과. 적자->흑자 등도 포함)
+# (V2 > V1)
+min_growth_pct = 0.0001 # 0.01%
