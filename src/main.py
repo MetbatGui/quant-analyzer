@@ -1,28 +1,21 @@
 """퀀트 분석기 애플리케이션의 메인 실행 파일(Entrypoint)입니다.
-
-이 파일은 헥사고널 아키텍처의 모든 구성 요소를 조립(Assemble)하고
-의존성을 주입(Inject)하는 역할을 합니다.
-
-실행 방법 (프로젝트 루트 '2_Quant_Analyzer'에서):
-$ python src/main.py
+...
 """
 
 # --- 1. 경로 설정 ---
-# (pwd를 기준으로 한 상대 경로)
 STRATEGIES_DIR = "strategies/active"
 DATA_FILE_PATH = "data/재무데이터_통합_최종.xlsx"
+# (NEW) Excel 저장 경로
+XLSX_OUTPUT_FILE = "output/results/quant_screening_results.xlsx" 
 
 
 # --- 2. 모든 구성 요소 임포트 ---
-
-# Outbound Adapters (외부 구현체)
 from adapters.outbound.excel_data_source import ExcelFinancialDataSource
 from adapters.outbound.toml_strategy_loader import TomlStrategyLoader
+# (CHANGE) CSV 대신 Excel 어댑터 임포트
+from adapters.outbound.excel_result_persistence import ExcelResultPersistenceAdapter
 
-# Domain Service (핵심 로직)
 from domain.service.screening_service import QuantScreeningService
-
-# Inbound Adapter (실행기)
 from adapters.inbound.console_runner import ConsoleRunner
 
 
@@ -36,11 +29,17 @@ def main():
         data_source_adapter = ExcelFinancialDataSource(file_path=DATA_FILE_PATH)
         strategy_loader_adapter = TomlStrategyLoader(active_strategies_path=STRATEGIES_DIR)
         
+        # (CHANGE) CSV 어댑터 대신 Excel 어댑터 생성
+        persistence_adapter = ExcelResultPersistenceAdapter(
+            output_file_path=XLSX_OUTPUT_FILE
+        )
+        
     except Exception as e:
         print(f"🚨 [Main] Outbound 어댑터 초기화 실패: {e}")
         return
 
     # --- 4. Domain Service 생성 (핵심 로직) ---
+    # (이 부분은 전혀 수정할 필요가 없습니다)
     try:
         quant_service = QuantScreeningService(
             data_source=data_source_adapter,
@@ -51,7 +50,11 @@ def main():
         return
 
     # --- 5. Inbound 어댑터 생성 (실행기) ---
-    console_runner = ConsoleRunner(screening_service=quant_service)
+    # (이 부분도 'persistence_adapter'가 포트 타입이라 수정할 필요가 없습니다)
+    console_runner = ConsoleRunner(
+        screening_service=quant_service,
+        persistence_adapter=persistence_adapter
+    )
 
     # --- 6. 애플리케이션 실행 ---
     console_runner.run()
