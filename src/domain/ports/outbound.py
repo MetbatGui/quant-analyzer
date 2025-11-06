@@ -8,7 +8,8 @@ from abc import ABC, abstractmethod
 from typing import Dict
 from domain.model.criteria import Criteria
 from domain.model.data_models import FinancialData
-
+import pandas as pd
+    
 
 class FinancialDataSourcePort(ABC):
     """외부에서 원본 재무 데이터를 로드하기 위한 포트입니다."""
@@ -35,5 +36,22 @@ class StrategyLoaderPort(ABC):
 
         Returns:
             Dict[str, Criteria]: {전략_이름: Criteria_객체} 딕셔너리.
+        """
+        pass
+
+class ResultPersistencePort(ABC):
+    """
+    스크리닝 결과를 외부(예: CSV, DB)에 저장하기 위한
+    아웃바운드 포트입니다.
+    """
+
+    @abstractmethod
+    def save_results(self, results: Dict[str, pd.DataFrame]):
+        """
+        스크리닝 결과 딕셔너리를 받아 영속성(Persistence)을 처리합니다.
+
+        Args:
+            results (Dict[str, pd.DataFrame]): 
+                {전략_이름: 결과 DataFrame} 딕셔너리.
         """
         pass
