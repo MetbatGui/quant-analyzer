@@ -6,6 +6,7 @@
 
 from abc import ABC, abstractmethod
 from typing import Dict, List
+import pandas as pd
 
 
 class ScreeningUseCasePort(ABC):
@@ -17,11 +18,14 @@ class ScreeningUseCasePort(ABC):
     """
 
     @abstractmethod
-    def run_all_active_strategies(self) -> Dict[str, List[str]]:
+    def run_all_active_strategies(self) -> Dict[str, pd.DataFrame]:
         """
         활성화된 모든 전략을 실행합니다.
 
         Returns:
-            Dict[str, List[str]]: {전략_이름: [통과된 종목 리스트]} 형태의 딕셔너리.
+            Dict[str, pd.DataFrame]: 
+                {전략_이름: [결과 DataFrame]} 딕셔너리.
+                DataFrame은 종목명을 인덱스로, 근거 데이터(실적, 성장률)를
+                컬럼으로 가집니다.
         """
         pass

@@ -3,6 +3,7 @@
 """
 
 from typing import Dict, List
+import pandas as pd
 from domain.ports.inbound import ScreeningUseCasePort
 
 class ConsoleRunner:
@@ -35,18 +36,21 @@ class ConsoleRunner:
         # 2. 결과 출력 (프레젠테이션 로직)
         self._print_results(results)
 
-    def _print_results(self, results: Dict[str, List[str]]):
+    def _print_results(self, results: Dict[str, pd.DataFrame]):
         """스크리닝 결과를 콘솔에 예쁘게 출력합니다."""
         
         if not results:
             print("\n실행된 전략이 없거나 결과가 없습니다.")
             return
 
-        for strategy_name, stocks in results.items():
+        for strategy_name, result_df in results.items():
             print(f"\n--- [전략: {strategy_name}] ---")
-            if not stocks:
+            
+            if result_df.empty:
                 print("  -> 통과한 종목 없음")
             else:
-                print(f"  -> 총 {len(stocks)}개 종목 통과:")
-                for i, stock in enumerate(stocks):
-                    print(f"    {i+1}. {stock}")
+                print(f"  -> 총 {len(result_df)}개 종목 통과:")
+                
+                # DataFrame을 문자열로 이쁘게 출력 (Pandas 기능)
+                with pd.option_context('display.width', 1000, 'display.max_rows', None):
+                    print(result_df.to_string())
