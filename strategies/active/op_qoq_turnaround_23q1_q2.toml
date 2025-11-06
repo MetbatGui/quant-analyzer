@@ -1,0 +1,15 @@
+# 전략: 2023년 1분기 영업이익 적자(<= 0) -> 2분기 영업이익 흑자(> 0)
+strategy_name = "영업이익 23년 1Q->2Q 턴어라운드"
+
+[criteria]
+# (중요) 새로운 전략 type 정의
+type = "QoQ_Turnaround" 
+
+# 비교할 지표
+metric = "영업이익"
+
+# 기준 분기 (이때 적자여야 함)
+base_quarter = "2023/1Q"
+
+# 비교 분기 (이때 흑자여야 함)
+target_quarter = "2023/2Q"

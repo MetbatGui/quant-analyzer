@@ -49,3 +49,21 @@ class QoQCriteria(Criteria):
             str: Criteria의 고유 유형.
         """
         return "QoQ_Growth"
+    
+@dataclass(frozen=True)
+class TurnaroundCriteria(Criteria):
+    """(적자 -> 흑자) 턴어라운드 전략을 정의합니다.
+
+    Attributes:
+        metric (str): 계산할 지표 (예: "영업이익").
+        base_quarter (str): 기준 분기 (이때 <= 0 이어야 함).
+        target_quarter (str): 비교 분기 (이때 > 0 이어야 함).
+    """
+    metric: str
+    base_quarter: str
+    target_quarter: str
+
+    @property
+    def type(self) -> str:
+        """Criteria 유형을 'Turnaround'로 반환합니다."""
+        return "Turnaround"
